@@ -3,16 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animal_shelter/textbox.dart';
 
-
-
-import 'models/Pet_model.dart';
+import 'models/pet_model.dart';
 
 class Update extends StatefulWidget {
   final Pet _pet;
 
-  const Update(
-    this._pet, {super.key}
-  );
+  const Update(this._pet, {super.key});
 
   @override
   State<StatefulWidget> createState() => _Update();
@@ -64,7 +60,6 @@ class _Update extends State<Update> {
                     md.isNotEmpty) {
                   Navigator.pop(
                       context,
-                      //Pet(name, age, species, behaviour, md));
                       Pet(
                           id: widget._pet.id,
                           name: name,
@@ -89,10 +84,6 @@ class _Update extends State<Update> {
   }
 
   bool _isNumeric(String str) {
-    // ignore: unnecessary_null_comparison
-    if (str == null) {
-      return false;
-    }
     return double.tryParse(str) != null;
   }
-}// end _Update class
+}

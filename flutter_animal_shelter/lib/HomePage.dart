@@ -1,5 +1,4 @@
 // ignore_for_file: file_names, non_constant_identifier_names, avoid_types_as_parameter_names, prefer_const_constructors
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_animal_shelter/Update.dart';
@@ -7,12 +6,13 @@ import 'package:flutter_animal_shelter/add.dart';
 import 'package:flutter_animal_shelter/messageResponse.dart';
 import 'Services/Database_Helper.dart';
 import 'ce.dart';
-import 'models/Pet_model.dart';
+import 'models/pet_model.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class MyHomePage extends StatefulWidget {
   final String _title;
-
   const MyHomePage(this._title, {super.key});
 
   @override
@@ -22,40 +22,26 @@ class MyHomePage extends StatefulWidget {
 class _MyhomePage extends State<MyHomePage> {
   List<Pet> _pets = [];
 
-  // final List<Pet> _pets = [
-  //   Pet(
-  //       name: "Rio",
-  //       age: 2,
-  //       species: "Orange Tabby cat",
-  //       medical_records: "vaccinated",
-  //       behaviour: "needy"),
-  //   Pet(
-  //       name: "Fio",
-  //       age: 3,
-  //       species: "cat",
-  //       medical_records: "unknow",
-  //       behaviour: "nice"),
-  //   Pet(
-  //       name: "Max",
-  //       age: 1,
-  //       species: "dog",
-  //       medical_records: "vaccinated",
-  //       behaviour: "playfull"),
-  // ];
+  String getBaseUrl() {
+    if (kIsWeb) {
+      return 'http://localhost:9191';
+    } else if (Platform.isAndroid) {
+      // If the app is running on Android (emulator or device)
+      return 'http://10.0.2.2:9191'; // Special alias for Android emulator
+    } else if (Platform.isIOS) {
+      return 'http://localhost:9191';
+    } else {
+      return 'http://localhost:9191';
+    }
+  }
 
-  // List<Pet> _pets = [
-  //   Pet("Rio", "2", "Orange Tabby cat", "vaccinated", "needy"),
-  //   Pet("Fio", "3", "cat", "unknow", "nice"),
-  //   Pet("Max", "1", "dog", "vaccinated", "playfull"),
-  // ];
-
-  //This function is used to fetch all data from the database
   void _refresh() async {
     try {
       var client = http.Client();
-      const url = 'http://10.0.2.2:9191/pets';
-      final uri = Uri.parse(url);
-      final response = await client.get(uri).timeout(const Duration(seconds: 2));
+      String baseUrl = getBaseUrl();
+      final uri = Uri.parse('$baseUrl/pets');
+      final response =
+          await client.get(uri).timeout(const Duration(seconds: 2));
       final body = response.body;
       final json = jsonDecode(body);
       List<Pet> _data = [];
@@ -83,14 +69,8 @@ class _MyhomePage extends State<MyHomePage> {
         _pets = _data;
       });
     } on Exception {
-      // log.severe(ex);
       throw Exception("could not fetch data");
     }
-
-    // final data = await DataBaseHelper.getPets();
-    // setState(() {
-    //   _pets = data!;
-    // });
   }
 
   void refresh() async {
@@ -103,26 +83,9 @@ class _MyhomePage extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-
-    // DataBaseHelper.addPet(Pet(
-    //     name: "Rio",
-    //     age: 2,
-    //     species: "Orange Tabby cat",
-    //     MD: "vaccinated",
-    //     behaviour: "needy",
-    //     id: 1));
-    //
-    // DataBaseHelper.addPet(Pet(
-    //     name: "Fio",
-    //     age: 3,
-    //     species: "cat",
-    //     MD: "vaccinated",
-    //     behaviour: "nice",
-    //     id: 2));
     try {
-      _refresh(); // Loading the diary when the app starts
+      _refresh();
     } catch (e) {
-      print("am intrat 2");
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -161,7 +124,6 @@ class _MyhomePage extends State<MyHomePage> {
                             context, newObject.name + " was updated");
                       });
                     } on Database_Exception catch (e) {
-                      print("am intrat");
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -205,7 +167,6 @@ class _MyhomePage extends State<MyHomePage> {
                   messageRrsponse(context, Object.name + " was added");
                 });
               } on Database_Exception catch (e) {
-                print("am intrat");
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -243,7 +204,6 @@ class _MyhomePage extends State<MyHomePage> {
                           Navigator.pop(context);
                         });
                       } on Database_Exception catch (e) {
-                        print("am intrat");
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {

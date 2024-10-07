@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animal_shelter/textbox.dart';
 
-import 'models/Pet_model.dart';
+import 'models/pet_model.dart';
 
-// ignore: camel_case_types
 class addPet extends StatefulWidget {
-
   final Pet? pet;
   const addPet({super.key, this.pet});
   @override
   State<StatefulWidget> createState() => _addPet();
 }
 
-// ignore: camel_case_types
 class _addPet extends State<addPet> {
-
   late TextEditingController controllerName;
   late TextEditingController controllerSpecies;
   late TextEditingController controllerAge;
@@ -30,9 +26,6 @@ class _addPet extends State<addPet> {
     controllerMD = TextEditingController();
     super.initState();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +54,6 @@ class _addPet extends State<addPet> {
                     behaviour.isNotEmpty &&
                     md.isNotEmpty) {
                   Navigator.pop(
-                      //context,Pet(name, age, species, behaviour, md));
                       context,
                       Pet(
                           name: name,
@@ -69,12 +61,11 @@ class _addPet extends State<addPet> {
                           behaviour: behaviour,
                           age: int.parse(age),
                           md: md,
-                      id: widget.pet?.id));
+                          id: widget.pet?.id));
                 } else {
                   showDialog(
                       context: context,
                       builder: (_) => const AlertDialog(
-                            //title: Text("opa"),
                             content: Text(
                                 "All filds shoud be filled and age shoud be a number"),
                           ));
@@ -84,13 +75,9 @@ class _addPet extends State<addPet> {
         ],
       ),
     );
-  } //build
+  }
 
   bool _isNumeric(String str) {
-    // ignore: unnecessary_null_comparison
-    if (str == null) {
-      return false;
-    }
     return double.tryParse(str) != null;
   }
 }

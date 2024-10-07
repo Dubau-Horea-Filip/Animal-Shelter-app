@@ -1,6 +1,5 @@
 package com.example.RestAPI.Controller;
 
-
 import com.example.RestAPI.Service.PetService;
 import com.example.RestAPI.entity.Pet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +10,13 @@ import java.util.List;
 @RestController
 public class PetController {
 
-    //inject service class
     @Autowired
     private PetService service;
 
     @PostMapping("/addPet")
-//    public Pet addPet(@RequestBody Pet pet) {return service.savePet(pet);}
-    public Pet addPet( Pet pet) {return service.savePet(pet);}  // works with android studio but not postman
+    public Pet addPet(Pet pet) {
+        return service.savePet(pet);
+    }
 
     @PostMapping("/addPets")
     public List<Pet> addPets(@RequestBody List<Pet> pets) {
@@ -49,5 +48,4 @@ public class PetController {
     public String deletePet(@PathVariable int id) {
         return service.deletePet(id);
     }
-
 }
