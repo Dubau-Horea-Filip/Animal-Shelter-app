@@ -1,9 +1,5 @@
 package com.example.RestAPI;
 
-
-
-
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,7 +15,6 @@ import static java.util.Collections.singletonList;
 @Configuration
 @EnableTransactionManagement
 public class SpringConfig implements WebMvcConfigurer {
-
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         List<String> allowOrigins = List.of("");
@@ -39,7 +34,6 @@ public class SpringConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .allowedHeaders("*")
                 .allowedOrigins("http://10.0.2.2:8080/")
-                        .allowedMethods("*");
+                .allowedMethods("*");
     }
-
 }

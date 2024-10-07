@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names, file_names
 class Pet {
   int? id;
   String name = "";
@@ -32,19 +31,3 @@ class Pet {
         'MD': md
       };
 }
-
-// class Pet {
-//   var name;
-//   var age;
-//   var species;
-//   var behaviour;
-//   var medical_records;
-
-//   Pet(String name, String age, String species, String beahaviour, String MD) {
-//     this.name = name;
-//     this.age = age;
-//     this.species = species;
-//     this.behaviour = beahaviour;
-//     this.medical_records = MD;
-//   }
-// }

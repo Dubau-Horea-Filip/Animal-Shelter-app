@@ -1,20 +1,28 @@
-// ignore_for_file: file_names, depend_on_referenced_packages, constant_identifier_names
+import 'dart:io';
 
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
 import '../ce.dart';
-import '../models/Pet_model.dart';
-
-
-
+import '../models/pet_model.dart';
 
 class DataBaseHelper {
   static const int _version = 1;
   static const String _DBname = "Pets.db";
+
+  static String getBaseUrl() {
+    if (kIsWeb) {
+      return 'http://localhost:9191';
+    } else if (Platform.isAndroid) {
+      return 'http://10.0.2.2:9191';
+    } else if (Platform.isIOS) {
+      return 'http://localhost:9191';
+    } else {
+      return 'http://localhost:9191';
+    }
+  }
 
   static Future<Database> _getDB() async {
     return openDatabase(join(await getDatabasesPath(), _DBname),
@@ -29,80 +37,51 @@ class DataBaseHelper {
       """), version: _version);
   }
 
-  //static Future<int> addPet(Pet pet) async {
-  static Future<void>  addPet(Pet pet) async {
-    //insert api call
-
-    try{
-      var response =
-      await http.post(Uri.parse('http://10.0.2.2:9191/addPet'), body: {
+  static Future<void> addPet(Pet pet) async {
+    try {
+      String baseUrl = getBaseUrl();
+      var response = await http.post(Uri.parse('$baseUrl/addPet'), body: {
         "name": pet.name,
         "age": pet.age.toString(),
         "species": pet.species,
         "behaviour": pet.behaviour,
         "md": pet.md
       }).timeout(const Duration(seconds: 1));
-      print(response);
-
-      if (response.statusCode != 200)
-      {
+      if (response.statusCode != 200) {
         throw Exception("There was an error while trying to reach the server ");
       }
-
-    } //end try
-     catch  (ex)
-    {
-      throw Database_Exception("Coudn't add pet ");
+    } catch (ex) {
+      throw Database_Exception("Couldn't add pet");
     }
-
-    // final db = await _getDB();
-    // return await db.insert("Pets", pet.toJson(),
-    //     conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  //static Future<int> updatePet(Pet pet) async {
   static Future<void> updatePet(Pet pet) async {
-
-    try{
-    var response =
-        await http.put(Uri.parse('http://10.0.2.2:9191/updatePet'), body: {
-      "id": pet.id.toString(),
-      "name": pet.name,
-      "age": pet.age.toString(),
-      "species": pet.species,
-      "behaviour": pet.behaviour,
-      "md": pet.md
-    }).timeout(const Duration(seconds: 1));
-
-    print(response);
-    } //end try
-    catch  (ex)
-    {
-      throw Database_Exception("There was an error while trying to update the pet ");
+    try {
+      String baseUrl = getBaseUrl(); // Get the correct base URL
+      await http.put(Uri.parse('$baseUrl/updatePet'), body: {
+        "id": pet.id.toString(),
+        "name": pet.name,
+        "age": pet.age.toString(),
+        "species": pet.species,
+        "behaviour": pet.behaviour,
+        "md": pet.md
+      }).timeout(const Duration(seconds: 1));
+    } catch (ex) {
+      throw Database_Exception(
+          "There was an error while trying to update the pet");
     }
-
-
-    // final db = await _getDB();
-    // return await db.update("Pets", pet.toJson(),
-    //     where: 'id = ?',
-    //     whereArgs: [pet.id],
-    //     conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  static Future <void> deletePet(Pet pet) async {
+  static Future<void> deletePet(Pet pet) async {
     try {
-      var response =
-      await http.delete(Uri.parse('http://10.0.2.2:9191/delete/${pet.id}')).timeout(const Duration(seconds: 1));
-      print(response);
+      String baseUrl = getBaseUrl(); // Get the correct base URL
+      await http
+          .delete(Uri.parse('$baseUrl/delete/${pet.id}'))
+          .timeout(const Duration(seconds: 1));
+    } catch (ex) {
+      throw Database_Exception(
+          "There was an error while trying to delete the pet");
     }
-    catch  (ex)
-    {
-      throw Database_Exception("There was an error while trying to delete the pet ");
-    }
-
-
-    // final db = await _getDB();
-    // return await db.delete("Pets", where: 'id = ?', whereArgs: [pet.id]);
   }
 
   static Future<List<Pet>?> getPets() async {
